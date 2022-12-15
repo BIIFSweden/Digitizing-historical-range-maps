@@ -6,9 +6,9 @@ The project contains two ImageJ macros:
 
 
 ## Inputs
-Maps were scanned at 600 dpi, full color, and savec in .jpg format. Each scanned image contains four panels. Two examples are in the folder `/data/scanned_maps`.
+Maps were scanned at 600 dpi, full color, and saved in .jpg format. Each scanned image contains four panels. Two examples are in the folder `/data/scanned_maps`.
 
-## 1. Cut each of the map panels separately 
+## 1. ImageJ (fiji) macro used to cut each of the map panels separately 
 Using the first script, maps are cut into separate images.
 /src/export_map_panels.ijm 
 

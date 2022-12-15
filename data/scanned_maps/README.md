@@ -1,1 +1,1 @@
-This dataset contains two examples of digitized pages with 4 maps per page.
+This dataset contains two examples of scanned pages with 4 maps per page.
