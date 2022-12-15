@@ -39,8 +39,7 @@ function removeBlack () {
 }
 
 // We run in batch mode, which hide windows of images during process:
-//setBatchMode("hide");
-setBatchMode("show");
+setBatchMode("hide");
 
 // We load the reference image:
 open(ref); //open file
@@ -63,22 +62,21 @@ for (i = 0; i < list.length; i++) {
     
     // Run bunwarpJ and save transformation
     run( "bUnwarpJ", "source_image="+img_name+" target_image="+ref_name+" registration=Mono " +
-      "image_subsample_factor=1 initial_deformation=[Very Coarse] " +
-      "final_deformation=[Fine] divergence_weight=0.1 curl_weight=0.1 landmark_weight=0 " +
+      "image_subsample_factor=1 initial_deformation=[Fine] " +
+      "final_deformation=[Super Fine] divergence_weight=0.1 curl_weight=0.1 landmark_weight=0 " +
       "image_weight=1 consistency_weight=10 stop_threshold=0.01 " +
       "save_transformations " +
       "save_direct_transformation="+output+"/transform.txt");
     // Close unused images:
-    //close(img_name);
-    //close("Registered Target Image");
-    //close("Registered Source Image");
+    close(img_name);
+    close("Registered Target Image");
+    close("Registered Source Image");
 
     // Apply saved transformation on the image with black pixels:
     call("bunwarpj.bUnwarpJ_.loadElasticTransform", output+"/transform.txt", ref_name, original_name);
     
     saveAs("jpg", output+"/"+original_name); //save panel in output folder
-    //close(original_name);
-    exit():
+    close(original_name);
 }
 close(ref_name);
 setBatchMode("show");
