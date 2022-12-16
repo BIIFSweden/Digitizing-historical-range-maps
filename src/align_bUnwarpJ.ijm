@@ -5,6 +5,8 @@
 #@ File (label = "Input images directory", style = "directory") input
 #@ File (label = "Output images  directory", style = "directory") output
 #@ File (label = "Reference image", style = "open") ref
+#@ boolean(label="Skip existing output",value=1, description="Do not recompute images already existing in the output folder") skip
+
 
 
 /* 
@@ -69,31 +71,34 @@ list_num= extract_digits(list);
 Array.sort(list_num, list);
 
 for (i = 0; i < list.length; i++) {
-    open(input+"/"+list[i]); //open file
-    original_name=getTitle(); //save file name as a variable
-    run("Duplicate...", " ");
-    rename("Duplicate");
-    // Remove black pixels from image:
-    removeBlack();
-    img_name=getTitle(); //save file name as a variable
     
-    // Run bunwarpJ and save transformation
-    run( "bUnwarpJ", "source_image="+img_name+" target_image="+ref_name+" registration=Mono " +
-      "image_subsample_factor=1 initial_deformation=[Fine] " +
-      "final_deformation=[Super Fine] divergence_weight=0.1 curl_weight=0.1 landmark_weight=0 " +
-      "image_weight=1 consistency_weight=10 stop_threshold=0.01 " +
-      "save_transformations " +
-      "save_direct_transformation="+output+"/transform.txt");
-    // Close unused images:
-    close(img_name);
-    close("Registered Target Image");
-    close("Registered Source Image");
-
-    // Apply saved transformation on the image with black pixels:
-    call("bunwarpj.bUnwarpJ_.loadElasticTransform", output+"/transform.txt", ref_name, original_name);
+    if (!skip || !File.exists(output+"/"+list[i])) {
+        open(input+"/"+list[i]); //open file
+        original_name=getTitle(); //save file name as a variable
+        run("Duplicate...", " ");
+        rename("Duplicate");
+        // Remove black pixels from image:
+        removeBlack();
+        img_name=getTitle(); //save file name as a variable
+        
+        // Run bunwarpJ and save transformation
+        run( "bUnwarpJ", "source_image="+img_name+" target_image="+ref_name+" registration=Mono " +
+          "image_subsample_factor=1 initial_deformation=[Fine] " +
+          "final_deformation=[Super Fine] divergence_weight=0.1 curl_weight=0.1 landmark_weight=0 " +
+          "image_weight=1 consistency_weight=10 stop_threshold=0.01 " +
+          "save_transformations " +
+          "save_direct_transformation="+output+"/transform.txt");
+        // Close unused images:
+        close(img_name);
+        close("Registered Target Image");
+        close("Registered Source Image");
     
-    saveAs("jpg", output+"/"+original_name); //save panel in output folder
-    close(original_name);
+        // Apply saved transformation on the image with black pixels:
+        call("bunwarpj.bUnwarpJ_.loadElasticTransform", output+"/transform.txt", ref_name, original_name);
+        
+        saveAs("jpg", output+"/"+original_name); //save panel in output folder
+        close(original_name);
+    }
 }
 close(ref_name);
 setBatchMode("show");
