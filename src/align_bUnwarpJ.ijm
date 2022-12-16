@@ -38,6 +38,21 @@ function removeBlack () {
     run("Select None");
 }
 
+function extract_digits(a) {
+    arr2 = newArray; //return array containing digits
+    for (i = 0; i < a.length; i++) {
+        str = a[i];
+        digits = "";
+        for (j = 0; j < str.length; j++) {
+            ch = str.substring(j, j+1);
+            if(!isNaN(parseInt(ch)))
+                digits += ch;
+        }
+        arr2[i] = parseInt(digits);
+    }
+    return arr2;
+}
+
 // We run in batch mode, which hide windows of images during process:
 setBatchMode("hide");
 
@@ -50,7 +65,9 @@ ref_name=getTitle(); //save file name as a variable
 
 //Browse through all images in folder:
 list = getFileList(input);
-list = Array.sort(list);
+list_num= extract_digits(list);
+Array.sort(list_num, list);
+
 for (i = 0; i < list.length; i++) {
     open(input+"/"+list[i]); //open file
     original_name=getTitle(); //save file name as a variable
